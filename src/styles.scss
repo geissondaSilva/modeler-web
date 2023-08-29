@@ -1,1 +1,24 @@
-/* You can add global styles to this file, and also import other style files */
+body, html {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    --primary-color: #6002EE;
+    --accent-color: #d602ee;
+}
+
+nav {
+    border-bottom: 1px solid #ccc;
+    height: 50px;
+}
+
+main {
+    flex: 1 1 auto;
+
+    canvas {
+        overflow: overflow;
+    }
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

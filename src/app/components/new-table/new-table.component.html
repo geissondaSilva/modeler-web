@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>New Table</h2>
+
+<div class="container">
+
+    <input type="text" cdkFocusInitial [(ngModel)]="table.name">
+
+    <table #grid>
+        <tr>
+            <th>Name</th>
+            <th>type</th>
+            <th>precision</th>
+        </tr>
+        <tr *ngFor="let col of table.columns; let i = index">
+            <td>
+                <input [ariaRowIndex]="i" class="input-table" (keyup.enter)="onEnter(i)" type="text" [(ngModel)]="col.name">
+            </td>
+            <td>Maria Anders</td>
+            <td>Germany</td>
+        </tr>
+    </table>
+</div>
+
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-raised-button color="primary" (click)="create()">Create</button>
+</mat-dialog-actions>

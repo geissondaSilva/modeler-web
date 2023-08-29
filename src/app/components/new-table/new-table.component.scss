@@ -1,0 +1,28 @@
+input {
+    height: 24px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    input {
+        border: none;
+        width: 100%;
+    }
+}
+
+table, td, th {
+    border: 1px solid #ccc;
+    text-align: start;
+    padding: 0;
+}
+
+th {
+    padding: 4px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 4px 8px;
+}
