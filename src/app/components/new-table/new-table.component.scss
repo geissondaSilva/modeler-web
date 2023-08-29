@@ -1,12 +1,13 @@
-input {
+input, select {
     height: 24px;
 }
 table {
     width: 100%;
     border-collapse: collapse;
-    input {
+    input, select {
         border: none;
         width: 100%;
+        box-sizing: border-box;
     }
 }
 

@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>New Table</h2>
+<h2 mat-dialog-title>{{table.name}}</h2>
 
 <div class="container">
 
@@ -10,12 +10,25 @@
             <th>type</th>
             <th>precision</th>
         </tr>
-        <tr *ngFor="let col of table.columns; let i = index">
+        <tr appLineControl *ngFor="let col of table.columns; let i = index">
             <td>
-                <input [ariaRowIndex]="i" class="input-table" (keyup.enter)="onEnter(i)" type="text" [(ngModel)]="col.name">
+                <input [ariaRowIndex]="i" [rowIndex]="i" [colIndex]="0" appColControl type="text"
+                    [(ngModel)]="col.name">
             </td>
-            <td>Maria Anders</td>
-            <td>Germany</td>
+            <td>
+                <select appColControl [rowIndex]="i" [colIndex]="1" [(ngModel)]="col.type">
+                    <option value="integer">integer</option>
+                    <option value="int2">int2</option>
+                    <option value="int4">int4</option>
+                    <option value="varchar">varchar</option>
+                    <option value="bigint">bigint</option>
+                    <option value="timestamp">timestamp</option>
+                    <option value="date">date</option>
+                </select>
+            </td>
+            <td>
+                <input appColControl [rowIndex]="i" [colIndex]="2" type="number" [(ngModel)]="col.precision">
+            </td>
         </tr>
     </table>
 </div>

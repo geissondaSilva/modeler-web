@@ -1,13 +1,7 @@
-import { Component, ElementRef, Inject, HostListener, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, ViewChild, ViewChildren, QueryList } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { LineControlDirective } from 'src/app/directives/line-control.directive';
 import { Table } from 'src/app/models/table';
-
-enum KEY_CODE {
-    RIGHT_ARROW = 'ArrowRight',
-    LEFT_ARROW = 'ArrowLeft',
-    UP_ARROW = 'ArrowUp',
-    DOWN_ARROW = 'ArrowDown',
-  }
 
 @Component({
     selector: 'app-new-table',
@@ -19,6 +13,8 @@ export class NewTableComponent {
     public table: Table;
 
     @ViewChild('grid') public grid?: ElementRef<HTMLTableElement>;
+
+    @ViewChildren(LineControlDirective) public lines: QueryList<LineControlDirective> | undefined;
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: { x: number, y: number },
@@ -41,30 +37,20 @@ export class NewTableComponent {
         };
     }
 
-    @HostListener('window:keyup', ['$event'])
-    keyEvent(event: KeyboardEvent) {
-        switch(event.key) {
-            case KEY_CODE.DOWN_ARROW: this.focusNextLine(); break;
-            case KEY_CODE.UP_ARROW: this.focusPreviosLine(); break;
+    public focus(row: number, col: number) {
+        if (!this.lines) return;
+        const line = this.lines.get(row);
+        if (line) {
+            line.focusCol(col);
         }
     }
 
-    focusNextLine() {
-        this.focusLine(2);
+    get maxLines() {
+        return this.table.columns.length;
     }
 
-    focusPreviosLine() {
-        this.focusLine(0);
-    }
-
-    private focusLine(next: number) {
-        const isInputCols = document.activeElement?.classList.contains('input-table');
-        if (!isInputCols) return;
-        const index = parseInt(document.activeElement?.ariaRowIndex || '0', 0);
-        const child = this.grid?.nativeElement.childNodes.item(index + next) as HTMLElement;
-        if (!child || !child['getElementsByTagName']) return;
-        const input = child.getElementsByTagName('input').item(0);
-        input?.focus();
+    get maxCols() {
+        return 3;
     }
 
     create() {
@@ -72,11 +58,12 @@ export class NewTableComponent {
     }
 
     onEnter(index: number) {
-        this.table.columns.splice(index + 1, 0, {});
+        const newIndex = index + 1;
+        this.table.columns.splice(newIndex, 0, {});
         let me = this;
         setTimeout(() => {
-            me.focusNextLine();
-        }, 100);
+            me.focus(newIndex, 0);
+        }, 300);
     }
 
 }

@@ -9,11 +9,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { NewTableComponent } from './components/new-table/new-table.component';
 import { FormsModule } from '@angular/forms';
+import { ColControlDirective } from './directives/col-control.directive';
+import { LineControlDirective } from './directives/line-control.directive';
 
 @NgModule({
   declarations: [
     AppComponent,
-    NewTableComponent
+    NewTableComponent,
+    ColControlDirective,
+    LineControlDirective
   ],
   imports: [
     BrowserModule,
