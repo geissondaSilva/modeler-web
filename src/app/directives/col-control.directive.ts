@@ -59,11 +59,29 @@ export class ColControlDirective {
     }
 
     nextCol() {
-        // TODO: not implemented
+        const isLast = this.colIndex === this.component.maxCols - 1;
+        const col = isLast ? 0 : this.colIndex;
+        const isLastRow = this.rowIndex === this.component.maxLines - 1;
+        if (isLastRow && isLast) {
+            this.componentFocus(0, col);
+        } else if (isLast) {
+            this.componentFocus(this.rowIndex + 1, col);
+        } else {
+            this.componentFocus(this.rowIndex, col + 1);
+        }
     }
 
     previusCol() {
-        // TODO: not implemented
+        const isFirst = this.colIndex === 0;
+        const col = isFirst ? this.component.maxCols - 1 : this.colIndex;
+        const isFirtsRow = this.rowIndex === 0;
+        if (isFirtsRow && isFirst) {
+            this.componentFocus(this.component.maxCols - 1, col);
+        } else if (isFirst) {
+            this.componentFocus(this.rowIndex - 1, col);
+        } else {
+            this.componentFocus(this.rowIndex, col - 1);
+        }
     }
     
     private componentFocus(row: number, col: number) {
