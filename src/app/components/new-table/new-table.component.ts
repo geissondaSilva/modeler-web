@@ -2,6 +2,8 @@ import { Component, ElementRef, Inject, ViewChild, ViewChildren, QueryList } fro
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { LineControlDirective } from 'src/app/directives/line-control.directive';
 import { Table } from 'src/app/models/table';
+import { DataService } from 'src/app/services/data.service';
+import { CONFIGURATION, Configuration } from 'src/app/tokens/configuration';
 
 @Component({
     selector: 'app-new-table',
@@ -19,6 +21,7 @@ export class NewTableComponent {
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: { x: number, y: number },
         public dialogRef: MatDialogRef<NewTableComponent>,
+        @Inject(CONFIGURATION) private config: Configuration,
     ) {
         this.table = {
             name: 'new_table',
@@ -54,6 +57,8 @@ export class NewTableComponent {
     }
 
     create() {
+        const { colSize, headerHeight } = this.config;
+        this.table.height = this.table.columns.length * colSize + headerHeight;
         this.dialogRef.close(this.table);
     }
 
