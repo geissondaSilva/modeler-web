@@ -5,29 +5,52 @@ import { Options } from '../models/options';
 import { Table } from '../models/table';
 
 const DATA = {
-    name: 'Biblioteca',
-    schemas: [
+    "name": "Biblioteca",
+    "schemas": [
         {
-            name: 'public',
-            tables: [
+            "name": "public",
+            "tables": [
                 {
-                    name: 'autor',
-                    color: 'green',
-                    x: 10,
-                    y: 20,
-                    height: 300,
-                    width: 180,
-                    columns: [
+                    "name": "pessoa",
+                    "color": "blue",
+                    "x": 319,
+                    "y": 267,
+                    "height": 72,
+                    "width": 180,
+                    "columns": [
                         {
-                            name: 'id',
-                            pk: true,
-                            type: 'bigint'
+                            "name": "codigo",
+                            "pk": true,
+                            "type": "bigint"
                         },
                         {
-                            name: 'nome',
-                            pk: false,
-                            type: 'varchar',
-                            precision: 100
+                            "name": "nome",
+                            "type": "varchar",
+                            "precision": 100
+                        }
+                    ]
+                },
+                {
+                    "name": "autor",
+                    "color": "blue",
+                    "x": 671,
+                    "y": 171,
+                    "height": 96,
+                    "width": 180,
+                    "columns": [
+                        {
+                            "name": "codigo",
+                            "pk": true,
+                            "type": "bigint"
+                        },
+                        {
+                            "name": "nome",
+                            "type": "varchar",
+                            "precision": 100
+                        },
+                        {
+                            "name": "situacao",
+                            "type": "int2"
                         }
                     ]
                 }
@@ -47,7 +70,9 @@ export class DataService {
         this._options = {
             relational: false,
         }
-        this._diagram = {};
+        this._diagram = {
+            schemas: []
+        };
     }
 
     get options() {

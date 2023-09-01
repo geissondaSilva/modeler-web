@@ -1,6 +1,6 @@
 import { Table } from "./table";
 
 export interface Schema {
-    name?: string;
-    tables?: Table[];
+    name: string;
+    tables: Table[];
 }

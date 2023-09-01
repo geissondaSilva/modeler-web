@@ -27,4 +27,12 @@ export class AppComponent implements OnInit {
     newTable() {
        this.tableService.newTable();
     }
+
+    moveTable() {
+        this.tableService.moveTable();
+    }
+
+    log() {
+        console.log(this.data.diagram);
+    }
 }
