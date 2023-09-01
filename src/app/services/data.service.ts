@@ -3,6 +3,7 @@ import { Observable, of } from 'rxjs';
 import { Diagrama } from '../models/diagrama';
 import { Options } from '../models/options';
 import { Table } from '../models/table';
+import { TableRef } from '../models/table-ref';
 
 const DATA = {
     "name": "Biblioteca",
@@ -90,5 +91,9 @@ export class DataService {
 
     addTable(table: Table) {
         this.diagram?.schemas?.at(0)?.tables?.push(table);
+    }
+
+    editTable(table: Table, ref: TableRef) {
+        this._diagram.schemas[ref.schema].tables[ref.position] = table;
     }
 }

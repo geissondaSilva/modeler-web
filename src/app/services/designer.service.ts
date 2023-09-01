@@ -4,19 +4,21 @@ import { Diagrama } from '../models/diagrama';
 import { Options } from '../models/options';
 import { Table } from '../models/table';
 import { Column } from '../models/column';
+import { DataService } from './data.service';
 
 @Injectable({ providedIn: 'root' })
 export class DesignerService {
 
     private designer?: HTMLElement;
-    private canvas?: HTMLCanvasElement;
+    public canvas?: HTMLCanvasElement;
     private ctx?: CanvasRenderingContext2D;
+
+    private editTableFn: any;
 
     constructor(
         @Inject(CONFIGURATION) private config: Configuration,
-    ) {
-        
-    }
+        private data: DataService,
+    ) {}
 
     init() {
         this.designer = document.getElementById('designer') as HTMLElement;
@@ -25,6 +27,7 @@ export class DesignerService {
         this.canvas.height = this.designer?.clientHeight || 500;
         this.designer?.appendChild(this.canvas);
         this.ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
+        this.canvas.addEventListener('dblclick', this.editTableFn);
     }
 
     get context() {
@@ -118,9 +121,14 @@ export class DesignerService {
         this.context.fill();
         this.context.closePath();
         this.context.textAlign = 'start';
-        this.context.fillStyle = 'black';
         this.context.textBaseline = "middle";
-        this.context.fillText(`${col.name}:${col.type}`, x + 10, colY + (this.config.colSize / 2));
+        const textY = colY + (this.config.colSize / 2)
+        if (col.pk) {
+            this.context.fillStyle = '#FFD700';
+            this.context.fillText(`PK`, x + 5, textY);
+        }
+        this.context.fillStyle = 'black';
+        this.context.fillText(`${col.name}:${col.type}`, x + 30, textY);
         this.context.closePath();
     }
 
@@ -175,5 +183,28 @@ export class DesignerService {
         this.context.arc(x + table.width, y, radius, 0, 2 * Math.PI);
         this.context.fill();
         this.context.closePath();
+    }
+
+    export() {
+        const dataURL = this.canvas?.toDataURL('image/png');
+        if (!dataURL) return;
+        const link = document.createElement('a');
+        link.href = dataURL;
+        link.download = 'imagem.png';
+        link.click();
+    }
+
+    public getTableRefFromPosition(x: number, y: number) {
+        let ref = { schema: -1, position: -1 };
+        this.data.diagram.schemas.forEach((schema, schemaIndex) => {
+            schema.tables.forEach((table, tableIndex) => {
+                const isX = x > table.x && x < table.x + table.width;
+                const isY = y > table.y && y < table.y + this.config.headerHeight;
+                if (isX && isY) {
+                    ref = { schema: schemaIndex, position: tableIndex };
+                }
+            })
+        });
+        return ref;
     }
 }

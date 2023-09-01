@@ -19,6 +19,7 @@ export class AppComponent implements OnInit {
 
     ngOnInit(): void {
         this.designer.init();
+        this.registerFunctions();
         this.data.get().subscribe(diagram => {
             this.designer.design(diagram, this.data.options);
         });
@@ -34,5 +35,13 @@ export class AppComponent implements OnInit {
 
     log() {
         console.log(this.data.diagram);
+    }
+
+    exportar() {
+        this.designer.export();
+    }
+
+    private registerFunctions() {
+        this.designer.canvas?.addEventListener('dblclick', this.tableService.editTableFn);
     }
 }

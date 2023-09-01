@@ -11,13 +11,15 @@ import { NewTableComponent } from './components/new-table/new-table.component';
 import { FormsModule } from '@angular/forms';
 import { ColControlDirective } from './directives/col-control.directive';
 import { LineControlDirective } from './directives/line-control.directive';
+import { CanvasDirective } from './directives/canvas.directive';
 
 @NgModule({
   declarations: [
     AppComponent,
     NewTableComponent,
     ColControlDirective,
-    LineControlDirective
+    LineControlDirective,
+    CanvasDirective
   ],
   imports: [
     BrowserModule,

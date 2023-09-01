@@ -19,11 +19,15 @@ export class NewTableComponent {
     @ViewChildren(LineControlDirective) public lines: QueryList<LineControlDirective> | undefined;
 
     constructor(
-        @Inject(MAT_DIALOG_DATA) public data: { x: number, y: number },
+        @Inject(MAT_DIALOG_DATA) public data: { x?: number, y?: number, table?: Table },
         public dialogRef: MatDialogRef<NewTableComponent>,
         @Inject(CONFIGURATION) private config: Configuration,
     ) {
-        this.table = {
+        this.table = data.table ? data.table : this.getNewTable();
+    }
+
+    private getNewTable() {
+        return {
             name: 'new_table',
             color: 'blue',
             x: this.data.x,
@@ -37,7 +41,7 @@ export class NewTableComponent {
                     type: 'bigint'
                 }
             ]
-        };
+        } as Table;
     }
 
     public focus(row: number, col: number) {
