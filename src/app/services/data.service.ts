@@ -4,6 +4,7 @@ import { Diagrama } from '../models/diagrama';
 import { Options } from '../models/options';
 import { Table } from '../models/table';
 import { TableRef } from '../models/table-ref';
+import { Relations } from '../models/relation';
 
 const DATA = {
     "name": "Biblioteca",
@@ -72,7 +73,8 @@ export class DataService {
             relational: false,
         }
         this._diagram = {
-            schemas: []
+            schemas: [],
+            relations: [],
         };
     }
 
@@ -95,5 +97,9 @@ export class DataService {
 
     editTable(table: Table, ref: TableRef) {
         this._diagram.schemas[ref.schema].tables[ref.position] = table;
+    }
+
+    addRelation(value: Relations) {
+        this._diagram.relations = [value];
     }
 }

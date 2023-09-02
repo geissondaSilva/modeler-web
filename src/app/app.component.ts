@@ -3,6 +3,7 @@ import { DesignerService } from './services/designer.service';
 import { DataService } from './services/data.service';
 import { Options } from './models/options';
 import { TableService } from './services/table.service';
+import { RelationalService } from './services/relational.service';
 
 @Component({
     selector: 'app-root',
@@ -15,6 +16,7 @@ export class AppComponent implements OnInit {
         private designer: DesignerService,
         private data: DataService,
         private tableService: TableService,
+        private relationalService: RelationalService,
     ) {}
 
     ngOnInit(): void {
@@ -39,6 +41,12 @@ export class AppComponent implements OnInit {
 
     exportar() {
         this.designer.export();
+    }
+
+    relational() {
+        this.data.options.relational = true;
+        this.designer.refresh();
+        this.relationalService.active();
     }
 
     private registerFunctions() {

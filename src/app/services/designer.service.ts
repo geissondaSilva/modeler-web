@@ -5,6 +5,7 @@ import { Options } from '../models/options';
 import { Table } from '../models/table';
 import { Column } from '../models/column';
 import { DataService } from './data.service';
+import { Relations } from '../models/relation';
 
 @Injectable({ providedIn: 'root' })
 export class DesignerService {
@@ -53,6 +54,10 @@ export class DesignerService {
         return this.canvas?.clientWidth || 500;
     }
 
+    refresh() {
+        this.design(this.data.diagram, this.data.options);
+    }
+
     design(diagram: Diagrama, options: Options) {
         this.context.clearRect(0, 0, this.width, this.height);
         this.designGrid();
@@ -62,6 +67,18 @@ export class DesignerService {
                 this.designTable(table, options);
             });
         });
+        diagram.relations?.map(rel => {
+            this.designRel(rel);
+        });
+    }
+
+    private designRel(value: Relations) {
+        this.context.beginPath();
+        this.context.strokeStyle = 'red';
+        this.context.moveTo(value.startX, value.startY);
+        this.context.lineTo(value.endX, value.endY);
+        this.context.stroke();
+        this.context.closePath();
     }
 
     private designGrid() {
