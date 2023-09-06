@@ -2,7 +2,9 @@ import { Component, ElementRef, Inject, ViewChild, ViewChildren, QueryList } fro
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { LineControlDirective } from 'src/app/directives/line-control.directive';
 import { Table } from 'src/app/models/table';
+import { TableRef } from 'src/app/models/table-ref';
 import { DataService } from 'src/app/services/data.service';
+import { DesignerService } from 'src/app/services/designer.service';
 import { CONFIGURATION, Configuration } from 'src/app/tokens/configuration';
 
 @Component({
@@ -19,9 +21,11 @@ export class NewTableComponent {
     @ViewChildren(LineControlDirective) public lines: QueryList<LineControlDirective> | undefined;
 
     constructor(
-        @Inject(MAT_DIALOG_DATA) public data: { x?: number, y?: number, table?: Table },
+        @Inject(MAT_DIALOG_DATA) public data: { x?: number, y?: number, table?: Table, ref?: TableRef },
         public dialogRef: MatDialogRef<NewTableComponent>,
         @Inject(CONFIGURATION) private config: Configuration,
+        private dataService: DataService,
+        private designer: DesignerService,
     ) {
         this.table = data.table ? data.table : this.getNewTable();
     }
@@ -73,6 +77,14 @@ export class NewTableComponent {
         setTimeout(() => {
             me.focus(newIndex, 0);
         }, 300);
+    }
+
+    delete() {
+        if (this.data.ref) {
+            this.dataService.deleteTable(this.data.ref)
+        }
+        this.designer.refresh();        
+        this.dialogRef.close();
     }
 
 }

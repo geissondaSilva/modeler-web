@@ -1,4 +1,5 @@
 import { Column } from "./column";
+import { Relations } from "./relation";
 
 export interface Table {
     name: string;
@@ -8,4 +9,5 @@ export interface Table {
     width: number;
     height: number;
     columns: Column[];
+    relations: Relations[];
 }

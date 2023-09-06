@@ -52,4 +52,8 @@ export class AppComponent implements OnInit {
     private registerFunctions() {
         this.designer.canvas?.addEventListener('dblclick', this.tableService.editTableFn);
     }
+
+    save() {
+        this.data.save();
+    }
 }

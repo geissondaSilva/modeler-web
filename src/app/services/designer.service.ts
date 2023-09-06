@@ -67,14 +67,29 @@ export class DesignerService {
                 this.designTable(table, options);
             });
         });
-        diagram.relations?.map(rel => {
-            this.designRel(rel);
+        if (options.relation) {
+            this.designRel(options.relation);
+        }
+        this.designPoints(options);
+    }
+
+    private designPoints(options: Options) {
+        if (!options.relational) {
+            return;
+        }
+        options.points.forEach(point => {
+            this.context.fillStyle = point.hover ? "red" : "green";
+            const radius = 3;
+            this.context.beginPath();
+            this.context.arc(point.x, point.y, radius, 0, 2 * Math.PI);
+            this.context.fill();
+            this.context.closePath();
         });
     }
 
     private designRel(value: Relations) {
         this.context.beginPath();
-        this.context.strokeStyle = 'red';
+        this.context.strokeStyle = 'grey';
         this.context.moveTo(value.startX, value.startY);
         this.context.lineTo(value.endX, value.endY);
         this.context.stroke();
@@ -120,9 +135,9 @@ export class DesignerService {
         this.createBorder(table);
         this.createHeader(table);
         this.createName(table);
-        if (options?.relational) {
-            this.createRelation(table);
-        }
+        table?.relations?.forEach(rel => {
+            this.designRel(rel);
+        });
     }
 
     private designCol(table: Table, col: Column, index: number, options: Options) {
@@ -188,18 +203,6 @@ export class DesignerService {
         this.context.textAlign = "center";
         this.context.textBaseline = "middle";
         this.context.fillText(table.name, table.x + (table.width / 2), table.y + (this.config.headerHeight / 2) + 3);
-    }
-
-    private createRelation(table: Table) {
-        this.context.fillStyle = "green";
-        const radius = 3;
-        const x = table.x;
-        const y = table.y + this.config.headerHeight + (this.config.colSize / 2);
-        this.context.beginPath();
-        this.context.arc(x, y, radius, 0, 2 * Math.PI);
-        this.context.arc(x + table.width, y, radius, 0, 2 * Math.PI);
-        this.context.fill();
-        this.context.closePath();
     }
 
     export() {

@@ -54,7 +54,7 @@ export class TableService {
 
     showTable(ref: TableRef) {
         const editTable = Object.assign({}, this.data.diagram.schemas[ref.schema].tables[ref.position]);
-        const dialogRef = this.dialog.open(NewTableComponent, { data: { table: editTable }, height: '600px', width: '900px' });
+        const dialogRef = this.dialog.open(NewTableComponent, { data: { table: editTable, ref }, height: '600px', width: '900px' });
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.data.editTable(result, ref);
