@@ -4,6 +4,7 @@ import { DesignerService } from './designer.service';
 import { CONFIGURATION, Configuration } from '../tokens/configuration';
 import { RelationalMap } from '../models/relational-map';
 import { Point } from '../models/point';
+import { Constraint } from '../models/constraint';
 
 @Injectable({ providedIn: 'root' })
 export class RelationalService {
@@ -34,7 +35,7 @@ export class RelationalService {
 
     public active() {
         window.addEventListener('mousedown', this.mouseDown);
-        window.addEventListener('mousemove', this.houverPoint);
+        // window.addEventListener('mousemove', this.houverPoint);
         this.buildMap();
         this.designer.refresh();
     }
@@ -45,30 +46,23 @@ export class RelationalService {
             schema.tables.forEach((table, tableIndex) => {
                 const x = table.x;
                 const y = table.y + this.config.headerHeight + (this.config.colSize / 2);
-                newMap.push({
+                const a: RelationalMap = {
                     position: tableIndex,
                     schema: schemaIndex,
                     x: x,
-                    y: y
-                });
-                newMap.push({
+                    y: y,
+                };
+                newMap.push(a);
+                const b: RelationalMap = {
                     position: tableIndex,
                     schema: schemaIndex,
                     x: x + table.width,
-                    y: y
-                });
+                    y: y,
+                };
+                newMap.push(b);
             });
         });
         this.map = newMap;
-        this.data.updatePonints(newMap.map(map => this.toOptions(map)));
-    }
-
-    private toOptions(map: RelationalMap): Point {
-        return {
-            x: map.x,
-            y: map.y,
-            hover: false
-        };
     }
 
     private onMouseDown(event: MouseEvent) {
@@ -95,7 +89,7 @@ export class RelationalService {
             startX: this.startX,
             startY: this.startY,
             endX: event.x,
-            endY: event.y - this.config.navHeight
+            endY: event.y - this.config.navHeight,
         });
         this.designer.refresh();
     }
@@ -104,28 +98,30 @@ export class RelationalService {
         const ref = this.findPoint(event);
         if (this.refHover != ref) {
             this.refHover = ref;
-            const newPoints = this.data.options.points.map(point => {
-                return {...point, hover: ref !== undefined && ref.x === point.x && ref.y === point.y}
-            });
-            this.data.updatePonints(newPoints);
             this.designer.refresh();
         }
     }
 
     private onMouseUp(event: MouseEvent) {
         const ref = this.findPoint(event);
-        if (ref) {
-            this.data.addRelation({
-                startX: this.startX,
-                startY: this.startY,
-                endX: ref.x,
-                endY: ref.y
-            }, ref);
+        if (ref && this.ref) {
+            const tableReference = this.data.getTable(this.ref);
+            const table = this.data.getTable(ref);
+            const constraint: Constraint = {
+                type: 'fk',
+                name: `fk_${table.name}_${tableReference.name}`,
+                column: `${tableReference.name}_id`,
+                referenceColumn: tableReference.columns[0].name || '',
+                referenceTable: tableReference.name
+            };
+            this.data.addConstraint(constraint, ref);
         }
         this.data.setRelationDesign(undefined);
         window.removeEventListener('mousemove', this.mouseMove);
         window.removeEventListener('mouseup', this.mouseUp);
         this.designer.refresh();
     }
+
+
 
 }

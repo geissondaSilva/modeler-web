@@ -1,5 +1,5 @@
 import { Column } from "./column";
-import { Relations } from "./relation";
+import { Constraint } from "./constraint";
 
 export interface Table {
     name: string;
@@ -9,5 +9,5 @@ export interface Table {
     width: number;
     height: number;
     columns: Column[];
-    relations: Relations[];
+    constraints: Constraint[];
 }

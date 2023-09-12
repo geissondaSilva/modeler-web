@@ -44,7 +44,8 @@ export class NewTableComponent {
                     pk: true,
                     type: 'bigint'
                 }
-            ]
+            ],
+            constraints: []
         } as Table;
     }
 

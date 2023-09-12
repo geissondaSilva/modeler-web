@@ -5,7 +5,8 @@ import { Options } from '../models/options';
 import { Table } from '../models/table';
 import { Column } from '../models/column';
 import { DataService } from './data.service';
-import { Relations } from '../models/relation';
+import { Point } from '../models/point';
+import { Schema } from '../models/schema';
 
 @Injectable({ providedIn: 'root' })
 export class DesignerService {
@@ -13,6 +14,8 @@ export class DesignerService {
     private designer?: HTMLElement;
     public canvas?: HTMLCanvasElement;
     private ctx?: CanvasRenderingContext2D;
+
+    private points: any = {};
 
     private editTableFn: any;
 
@@ -59,11 +62,17 @@ export class DesignerService {
     }
 
     design(diagram: Diagrama, options: Options) {
+        this.points = {};
         this.context.clearRect(0, 0, this.width, this.height);
         this.designGrid();
         this.context.font = "12px arial";
-        diagram?.schemas?.forEach(schem => {
-            schem?.tables?.forEach(table => {
+        diagram?.schemas?.forEach(schema => {
+            schema?.tables?.forEach(table => {
+                this.addPoint(table, schema);
+            });
+        });
+        diagram?.schemas?.forEach(schema => {
+            schema?.tables?.forEach(table => {
                 this.designTable(table, options);
             });
         });
@@ -73,11 +82,19 @@ export class DesignerService {
         this.designPoints(options);
     }
 
+    private addPoint(table: Table, schema: Schema) {
+        const x = table.x;
+        const y = table.y + this.config.headerHeight + (this.config.colSize / 2);
+        this.points[`${schema.name}.${table.name}.a`] = {x: x, y} as Point;
+        this.points[`${schema.name}.${table.name}.b`] = {x: x + table.width, y} as Point;
+    }
+
     private designPoints(options: Options) {
         if (!options.relational) {
             return;
         }
-        options.points.forEach(point => {
+        Object.keys(this.points).forEach(key => {
+            const point: Point = this.points[key];
             this.context.fillStyle = point.hover ? "red" : "green";
             const radius = 3;
             this.context.beginPath();
@@ -87,7 +104,7 @@ export class DesignerService {
         });
     }
 
-    private designRel(value: Relations) {
+    private designRel(value: {startX: number, startY: number, endX: number, endY: number}) {
         this.context.beginPath();
         this.context.strokeStyle = 'grey';
         this.context.moveTo(value.startX, value.startY);
@@ -135,8 +152,8 @@ export class DesignerService {
         this.createBorder(table);
         this.createHeader(table);
         this.createName(table);
-        table?.relations?.forEach(rel => {
-            this.designRel(rel);
+        table.constraints.forEach(constraint => {
+            // validar plano cartesiano
         });
     }
 
